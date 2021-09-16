@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import kotlinx.android.synthetic.main.fragment_api.*
 import kotlinx.android.synthetic.main.fragment_favorite.*
 
 class FavoriteFragment:Fragment() {
@@ -35,7 +34,10 @@ class FavoriteFragment:Fragment() {
 
         favoriteAdapter.apply{
             onClickDeleteFavorite = {
-                fragmentCallback?.onDeleteFavolite(it.id)
+                fragmentCallback?.onDeleteFavorite(it.id)
+            }
+            onClickItem = {
+                fragmentCallback?.onClickItem(it)
             }
         }
 

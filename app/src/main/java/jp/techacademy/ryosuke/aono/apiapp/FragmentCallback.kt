@@ -5,5 +5,5 @@ interface FragmentCallback {
 
     fun onClickItem(url: String)
     // なんでDelteだけid？
-    fun onDeleteFavolite(id:String)
+    fun onDeleteFavorite(id:String)
 }
