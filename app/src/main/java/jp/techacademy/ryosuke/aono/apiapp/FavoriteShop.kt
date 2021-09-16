@@ -26,6 +26,11 @@ open class FavoriteShop: RealmObject() {
                         realm.copyFromRealm(it)
                     }
             }
+        fun insert(favoriteShop: FavoriteShop) = // お気に入り追加
+            Realm.getDefaultInstance().executeTransaction {
+                it.insertOrUpdate(favoriteShop)
+            }
+
         fun delete(id: String) =
             Realm.getDefaultInstance().use { realm ->
                 realm.where(FavoriteShop::class.java).equalTo(FavoriteShop::id.name, id)
