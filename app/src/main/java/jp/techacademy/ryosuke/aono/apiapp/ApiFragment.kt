@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.fragment_api.*
 import okhttp3.*
@@ -21,6 +22,10 @@ class ApiFragment: Fragment()  {
     private val handler = android.os.Handler(Looper.getMainLooper())
 
     private var fragmentCallback : FragmentCallback? = null
+
+    private var page = 0
+
+    private var isLoading = false
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -41,12 +46,11 @@ class ApiFragment: Fragment()  {
         super.onViewCreated(view, savedInstanceState)
         apiAdapter.apply{
             onClickAddFavorite = {
-                fragmentCallback?.onDeleteFavolite(it.id)
+                fragmentCallback?.onAddFavolite(it)
             }
             onClickDeleteFavorite = { // Adapterの処理をそのままActivityに通知する
                 fragmentCallback?.onDeleteFavorite(it.id)
             }
-            // Itemをクリックしたとき
             onClickItem = {
                 fragmentCallback?.onClickItem(it)
             }
@@ -54,6 +58,21 @@ class ApiFragment: Fragment()  {
         recyclerView.apply{
             adapter = apiAdapter
             layoutManager = LinearLayoutManager(requireContext())
+
+            addOnScrollListener(object: RecyclerView.OnScrollListener(){
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    if(dy == 0){
+                        return
+                    }
+                    val totalCount = apiAdapter.itemCount
+                    val lastVisibleItem = (layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
+
+                    if (!isLoading && lastVisibleItem >= totalCount - 6) { // 読み込み中でない、かつ、現在のスクロール位置から下に5件見えていないアイテムがある
+                        updateData(true)
+                    }
+                }
+            })
         }
         swipeRefreshLayout.setOnRefreshListener {
             updateData()
@@ -65,7 +84,18 @@ class ApiFragment: Fragment()  {
         recyclerView.adapter?.notifyDataSetChanged()
     }
 
-    private fun updateData(){
+    private fun updateData(isAdd: Boolean = false){
+        if (isLoading) {
+            return
+        } else {
+            isLoading = true
+        }
+        if (isAdd) {
+            page ++
+        } else {
+            page = 0
+        }
+        val start = page * COUNT + 1
         val url = StringBuilder()
             .append(getString(R.string.base_url))
             .append("?key=").append(getString(R.string.api_key))
@@ -86,8 +116,9 @@ class ApiFragment: Fragment()  {
             override fun onFailure(call: Call, e: IOException) {
                 e.printStackTrace()
                 handler.post {
-                    updateRecyclerView(listOf())
+                    updateRecyclerView(listOf(), isAdd)
                 }
+                isLoading = false
             }
 
             override fun onResponse(call: Call, response: Response) {
@@ -97,14 +128,19 @@ class ApiFragment: Fragment()  {
                     list = apiResponse.results.shop
                 }
                 handler.post{
-                    updateRecyclerView(list)
+                    updateRecyclerView(list,isAdd)
                 }
+                isLoading = false
             }
         })
     }
 
-    private fun updateRecyclerView(list: List<Shop>){
-        apiAdapter.refresh(list)
+    private fun updateRecyclerView(list: List<Shop>, isAdd: Boolean){
+        if (isAdd) {
+            apiAdapter.add(list)
+        } else {
+            apiAdapter.refresh(list)
+        }
         swipeRefreshLayout.isRefreshing = false
     }
     companion object {

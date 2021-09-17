@@ -34,12 +34,20 @@ class MainActivity : AppCompatActivity(),FragmentCallback {
         (viewPagerAdapter.fragments[VIEW_PAGER_POSITION_FAVORITE] as FavoriteFragment).updateData()
     }
 
+    override fun onClickItem(shop: Shop) {
+        WebViewActivity.start(this, shop)
+    }
+
+    override fun onClickItem(favoriteShop: FavoriteShop) {
+        WebViewActivity.start(this, favoriteShop)
+    }
+
     companion object {
         private const val VIEW_PAGER_POSITION_API = 0
         private const val VIEW_PAGER_POSITION_FAVORITE = 1
     }
 
-    override fun onDeleteFavolite(id: String) {
+    override fun onDeleteFavorite(id: String) {
         showConfirmDeleteFavoriteDialog(id)
     }
 

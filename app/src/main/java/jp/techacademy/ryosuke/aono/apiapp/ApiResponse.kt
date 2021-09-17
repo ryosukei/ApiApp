@@ -1,6 +1,6 @@
 package jp.techacademy.ryosuke.aono.apiapp
 import com.google.gson.annotations.SerializedName
-
+import java.io.Serializable
 
 
 data class ApiResponse(
@@ -21,12 +21,14 @@ data class Shop(
     @SerializedName("logo_image")
     val logoImage: String,
     @SerializedName("name")
-    val name: String
-)
+    val name: String,
+    @SerializedName("address")
+    val address: String
+): Serializable
 
 data class CouponUrls(
     @SerializedName("pc")
     var pc: String,
     @SerializedName("sp")
     var sp: String
-)
+): Serializable

@@ -15,6 +15,7 @@ import com.squareup.picasso.Picasso
 class FavoriteAdapter(private val context: Context): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val items = mutableListOf<FavoriteShop>()
     var onClickDeleteFavorite: ((FavoriteShop) -> Unit)? = null
+    var onClickItem: ((FavoriteShop) -> Unit)? = null
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when(viewType){
             VIEW_TYPE_EMPTY -> EmptyViewHolder(LayoutInflater.from(context).inflate(R.layout.recycler_favorite_empty,parent,false))
@@ -47,9 +48,14 @@ class FavoriteAdapter(private val context: Context): RecyclerView.Adapter<Recycl
         holder.apply{
             rootView.apply{
                 setBackgroundColor(ContextCompat.getColor(context, if(position % 2 == 0) android.R.color.white else android.R.color.darker_gray))
+                setOnClickListener {
+                    onClickItem?.invoke(data)
+                }
             }
             nameTextView.text = data.name
-            Picasso.get().load(data.imageUrl).into(imageView)
+            if(data.imageUrl.isNotEmpty()){
+                Picasso.get().load(data.imageUrl).into(imageView)
+            }
             favoriteImageView.setOnClickListener{
                 onClickDeleteFavorite?.invoke(data)
                 notifyItemChanged(position)

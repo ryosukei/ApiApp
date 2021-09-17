@@ -46,7 +46,7 @@ class FavoriteFragment:Fragment() {
             layoutManager = LinearLayoutManager(requireContext())
         }
 
-        swiperRefreshLayout.setOnRefreshListener{
+        swipeRefreshLayout.setOnRefreshListener{
             updateData()
         }
         updateData()
