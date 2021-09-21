@@ -11,21 +11,16 @@ class WebViewActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_web_view)
-        val data = intent.getSerializableExtra(KEY)
-        var url: String = ""
-        var id: String = ""
+        var id = intent.getStringExtra(KEY_ID).toString()
+        var name = intent.getStringExtra(KEY_NAME).toString()
+        var imageUrl = intent.getStringExtra(KEY_IMAGEURL).toString()
+        var url = intent.getStringExtra(KEY_URL).toString()
 
-        if(data is FavoriteShop){
-            url = data.url
-            id = data.id
-        } else if (data is Shop) {
-            url = if (data.couponUrls.sp.isNotEmpty()) {
-                data.couponUrls.sp
-            } else {
-                data.couponUrls.pc
-            }
-            id = data.id
-        }
+        val shop = FavoriteShop()
+        shop.id = id
+        shop.name = name
+        shop.imageUrl = imageUrl
+        shop.url = url
         var isFavorite = FavoriteShop.findBy(id) != null
         webView.loadUrl(url)
         changeText(isFavorite)
@@ -36,15 +31,7 @@ class WebViewActivity : AppCompatActivity() {
                 FavoriteShop.delete(id)
             } else {
                 Log.d("isFab", "onClickAddFavorite")
-                if (data is Shop) {
-                    FavoriteShop.insert(FavoriteShop().apply {
-                        id = data.id
-                        name = data.name
-                        imageUrl = data.logoImage
-                        url =
-                            if (data.couponUrls.sp.isNotEmpty()) data.couponUrls.sp else data.couponUrls.pc
-                    })
-                }
+                FavoriteShop.insert(shop)
             }
             isFavorite = !isFavorite
             changeText(isFavorite)
@@ -60,12 +47,25 @@ class WebViewActivity : AppCompatActivity() {
     }
 
     companion object {
-        private const val KEY = "shop_data"
+        private const val KEY_ID = "key_id"
+        private const val KEY_IMAGEURL = "key_imageUrl"
+        private const val KEY_NAME = "key_name"
+        private const val KEY_URL = "key_url"
         fun start(activity: Activity, data: Shop) {
-            activity.startActivity(Intent(activity, WebViewActivity::class.java).putExtra(KEY, data))
+            val intent = Intent(activity, WebViewActivity::class.java)
+            intent.putExtra(KEY_ID, data.id)
+            intent.putExtra(KEY_IMAGEURL, data.logoImage)
+            intent.putExtra(KEY_NAME, data.name)
+            intent.putExtra(KEY_URL, if (data.couponUrls.sp.isNotEmpty()) data.couponUrls.sp else data.couponUrls.pc)
+            activity.startActivity(intent)
         }
         fun start(activity: Activity, data: FavoriteShop) {
-            activity.startActivity(Intent(activity, WebViewActivity::class.java).putExtra(KEY, data))
+            val intent = Intent(activity, WebViewActivity::class.java)
+            intent.putExtra(KEY_ID, data.id)
+            intent.putExtra(KEY_IMAGEURL, data.imageUrl)
+            intent.putExtra(KEY_NAME, data.name)
+            intent.putExtra(KEY_URL, data.url)
+            activity.startActivity(intent)
         }
     }
 }

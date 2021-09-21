@@ -76,7 +76,6 @@ class ApiAdapter(private val context: Context): RecyclerView.Adapter<RecyclerVie
             }
             // nameTextViewのtextプロパティに代入されたオブジェクトのnameプロパティを代入
             nameTextView.text = data.name
-            Log.d("data.address",data.address)
             addressTextView.text = data.address
             // Picassoライブラリを使い、imageViewにdata.logoImageのurlの画像を読み込ませる
             Picasso.get().load(data.logoImage).into(imageView)
@@ -85,10 +84,8 @@ class ApiAdapter(private val context: Context): RecyclerView.Adapter<RecyclerVie
                 setImageResource(if (isFavorite)R.drawable.ic_star else R.drawable.ic_star_border)
                 setOnClickListener{
                     if(isFavorite){
-                        Log.d("isFab", "onClickDeleteFavorite")
                         onClickDeleteFavorite?.invoke(data)
                     }else{
-                        Log.d("isFab", "onClickAddFavorite")
                         onClickAddFavorite?.invoke(data)
                     }
                     notifyItemChanged(position)
