@@ -1,5 +1,7 @@
 package jp.techacademy.ryosuke.aono.apiapp
 
+import android.app.Activity
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -25,11 +27,6 @@ class MainActivity : AppCompatActivity(),FragmentCallback {
         }.attach()
     }
 
-    override fun onResume() {
-        super.onResume()
-        (viewPagerAdapter.fragments[VIEW_PAGER_POSITION_API] as ApiFragment).updateView()
-        (viewPagerAdapter.fragments[VIEW_PAGER_POSITION_FAVORITE] as FavoriteFragment).updateData()
-    }
     override fun onAddFavolite(shop: Shop) {
         FavoriteShop.insert(FavoriteShop().apply{
             id = shop.id

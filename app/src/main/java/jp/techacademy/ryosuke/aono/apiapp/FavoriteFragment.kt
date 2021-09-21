@@ -51,6 +51,11 @@ class FavoriteFragment:Fragment() {
         }
         updateData()
     }
+
+    override fun onResume() {
+        super.onResume()
+        updateData()
+    }
     fun updateData(){
         favoriteAdapter.refresh(FavoriteShop.findAll())
         swipeRefreshLayout.isRefreshing = false

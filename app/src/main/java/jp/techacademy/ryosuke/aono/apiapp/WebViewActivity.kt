@@ -5,6 +5,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.KeyEvent
 import kotlinx.android.synthetic.main.activity_web_view.*
 
 class WebViewActivity : AppCompatActivity() {
@@ -44,6 +45,15 @@ class WebViewActivity : AppCompatActivity() {
         }else{
             webViewBtn.text = "お気に入りに追加"
         }
+    }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        Log.d("呼ばれた","aaa")
+        Log.d("KEYCODE_BACK",KeyEvent.KEYCODE_BACK.toString())
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            Log.d("呼ばれた","きめた")
+        }
+        return super.onKeyDown(keyCode, event)
     }
 
     companion object {

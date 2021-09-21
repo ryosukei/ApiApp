@@ -3,6 +3,7 @@ package jp.techacademy.ryosuke.aono.apiapp
 import android.content.Context
 import android.os.Bundle
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -55,6 +56,7 @@ class ApiFragment: Fragment()  {
                 fragmentCallback?.onClickItem(it)
             }
         }
+        Log.d("recyclerView","recyclerView")
         recyclerView.apply{
             adapter = apiAdapter
             layoutManager = LinearLayoutManager(requireContext())
@@ -78,6 +80,11 @@ class ApiFragment: Fragment()  {
             updateData()
         }
         updateData()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        updateView()
     }
 
     fun updateView(){
